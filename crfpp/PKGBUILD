@@ -1,0 +1,22 @@
+# Contributor: Bor Hodoscek <bor.hodoscek@gmail.com> 
+pkgname=crfpp
+_realname="CRF++"
+_webname="CRF%2B%2B"
+pkgver=0.58
+pkgrel=1
+pkgdesc="Conditional Random Field (CRF) Toolkit"
+arch=('i686' 'x86_64')
+url="http://code.google.com/p/crfpp/"
+license=('BSD' 'LGPL' 'GPL')
+source=(http://${pkgname}.googlecode.com/files/$_webname-$pkgver.tar.gz)
+md5sums=('c8ffd456ab1a6815ba916c1083194a99')
+sha1sums=('979a686a6d73d14cdd0c96a310888fb6bffd2e91')
+
+build() {
+  cd $startdir/src/$_realname-$pkgver
+  ./configure --prefix=/usr
+  make || return 1
+  make DESTDIR=$startdir/pkg install
+  install -D -m644 $srcdir/$_realname-$pkgver/COPYING \
+    $pkgdir/usr/share/licenses/$pkgname/COPYING
+}

@@ -1,0 +1,66 @@
+# Contributor: Bor Hodošček <bor.hodoscek@gmail.com> 
+pkgname=cabocha
+pkgver=0.68
+pkgrel=1
+pkgdesc="Japanese Dependency Structure Analyzer"
+arch=('i686' 'x86_64')
+url="http://code.google.com/p/cabocha/"
+license=('BSD' 'LGPL')
+depends=('crfpp' 'mecab' 'swig')
+source=("http://cabocha.googlecode.com/files/$pkgname-$pkgver.tar.bz2" 'unistd-patch.diff')
+backup=('usr/etc/cabocharc')
+
+build() {
+    cd ${srcdir}/${pkgname}-${pkgver}
+
+    # '--with-charset=UTF8' and '--enable-utf8-only' is optional.
+    # you can remove it (see INSTALL in source directory)
+    ./configure --prefix=/usr --with-charset=UTF8 --enable-utf8-only --with-posset=UNIDIC
+    make ${MAKEFLAGS}
+}
+
+check() {
+    cd ${srcdir}/${pkgname}-${pkgver}
+    make check
+}
+
+package() {
+    cd ${srcdir}/${pkgname}-${pkgver}
+
+    make DESTDIR=${pkgdir} install
+    install -Dm644 COPYING \
+        ${pkgdir}/usr/share/licenses/${pkgname}/COPYING
+
+  cd swig
+
+  cat >> CaboCha.i<<EOF
+%pragma(java) jniclasscode=%{
+  static {
+    try { 
+      System.loadLibrary("CaboCha");
+    } 
+    catch (RuntimeException e) {
+      System.out.println("Failed to load the C++ libraries during SWIG module initialisation");
+      e.printStackTrace();
+    }
+  }
+%}
+EOF
+
+  rm -rf ../java/org
+  make java
+  cd ..
+  cd java
+  sed -i "s:/usr/lib/jvm/java-6-openjdk/include:/usr/lib/jvm/default/include:" Makefile || return 1
+  make || return 1
+  install -d $pkgdir/usr/share/java/cabocha
+  install -d $pkgdir/usr/lib
+  install -m744 CaboCha.jar $pkgdir/usr/share/java/cabocha
+  install -m755 libCaboCha.so $pkgdir/usr/lib/
+  cd ..
+
+}
+md5sums=('3358b33212d88251b2510057f58f98bd'
+         '5c3ffb7e03a8ae0085d0136fbef88b9e')
+sha1sums=('5e22a71eb86d778fdeb1b725c0b27f1fb4af7f4b'
+          '958ca31d24d75708bf794d4e926e324f86bbedb2')

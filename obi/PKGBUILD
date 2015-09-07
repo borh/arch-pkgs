@@ -1,0 +1,43 @@
+# Contributor: Bor Hodoscek <bor.hodoscek@gmail.com> 
+pkgname=obi
+pkgver=2.304
+_pkgver="${pkgver}-20090820"
+pkgrel=1
+pkgdesc="Japanese language readability prediction tool"
+arch=('i686' 'x86_64')
+url="http://kotoba.nuee.nagoya-u.ac.jp/sc/obi2/obi_e.html"
+license=('cc-by-nc-sa-3.0')
+depends=(ruby)
+source=(http://kotoba.nuee.nagoya-u.ac.jp/sc/obi2/$pkgname-$_pkgver.tar.gz)
+md5sums=('8e1debd7b7e93cc145f47e3bccce5a2e')
+sha1sums=('dab8acc8f8b95baa32590fea500fc259df73dae5')
+
+build() {
+  cd $startdir/src/$pkgname-$_pkgver
+
+  cat > Makefile<<EOF
+RubyLib  = $pkgdir/usr/lib/ruby/vendor_ruby
+BinDir   = $pkgdir/usr/bin
+Obi2Dir  = $pkgdir/usr/share/obi2
+
+Library = nagoyaobi.rb
+Bin     = obi2
+Jchar   = jchar.utf8 jchar_without_katakana.utf8
+Model   = Obi2-T13.model Obi2-T13U.model Obi2-T14.model 
+
+install: install_lib install_bin install_model
+
+install_lib: \$(Library)
+	install -d \$(RubyLib) && install \$(Library) \$(RubyLib) 
+
+install_bin: \$(Bin)
+	install -d \$(BinDir) && install \$(Bin) \$(BinDir) 
+
+install_model: \$(Model) \$(Jchar)
+	install -d \$(Obi2Dir) && install \$(Model) \$(Jchar) \$(Obi2Dir)
+EOF
+
+  sed -i "s:/usr/local:/usr:g" obi2
+  sed -i "s:\(\$KCODE = 'utf8'\):# \1:" obi2
+  make install || return 1
+}

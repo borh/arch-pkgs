@@ -1,0 +1,21 @@
+# Contributor: Bor Hodoscek <bor.hodoscek@gmail.com> 
+pkgname=jdepp
+pkgver=20131225
+_pkgver=2013-12-25
+pkgrel=1
+pkgdesc="The Kyoto Text Analysis Toolkit for word segmentation and pronunciation estimation, etc."
+arch=('i686' 'x86_64')
+url="http://www.tkl.iis.u-tokyo.ac.jp/~ynaga/jdepp/"
+license=('Apache')
+source=(http://www.tkl.iis.u-tokyo.ac.jp/~ynaga/jdepp/${pkgname}-${_pkgver}.tar.xz)
+
+build() {
+  cd $startdir/src/${pkgname}-${_pkgver}
+  ./configure --with-postagger=mecab --enable-standalone --with-mecab-dict=UNI
+  make model || return 1
+  make DESTDIR=$startdir/pkg install
+  install -D -m644 $srcdir/$pkgname-${_pkgver}/COPYING \
+    $pkgdir/usr/share/licenses/$pkgname/COPYING
+}
+md5sums=('a33e1da14b4f57633a994d6e6722be10')
+sha512sums=('7a42671fa66f6c82d3fb1c3c3bd475c9b3b08c834a3bf970132a3e08d0e8d5545c49a064bd659ae152d949c1387467859affae08cab169948b83981036d65f73')

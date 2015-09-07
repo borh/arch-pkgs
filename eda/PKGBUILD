@@ -1,0 +1,26 @@
+# Contributor: Bor Hodoscek <bor.hodoscek@gmail.com> 
+pkgname=eda
+pkgver=0.3.3
+pkgrel=1
+pkgdesc="Easily adaptable Dependency Analyzer"
+arch=('i686' 'x86_64')
+url="http://plata.ar.media.kyoto-u.ac.jp/tool/EDA/"
+license=('Apache')
+source=("http://plata.ar.media.kyoto-u.ac.jp/tool/EDA/downloads/$pkgname-$pkgver.tar.gz"
+        'http://plata.ar.media.kyoto-u.ac.jp/tool/EDA/downloads/bccwj-20130906.etm')
+
+build() {
+  cd $startdir/src/$pkgname-$pkgver
+  make || return 1
+  make DESTDIR=$startdir/pkg install
+  install -D -m644 $srcdir/$pkgname-$pkgver/COPYING \
+    $pkgdir/usr/share/licenses/$pkgname/COPYING
+}
+
+md5sums=('ae978efcd6abc3e79536908873b6b503')
+sha512sums=('c46f72c4d9a650b587b973925f46b546b2b3286a5eaa0e9732597182c1053938e3a396d387bccd123db49cdb3cea626b3294c6a916e4fdd6ef8cb23695adee8a')
+
+md5sums=('ae978efcd6abc3e79536908873b6b503'
+         '676b10df96c42e8fa01ac29237578974')
+sha512sums=('c46f72c4d9a650b587b973925f46b546b2b3286a5eaa0e9732597182c1053938e3a396d387bccd123db49cdb3cea626b3294c6a916e4fdd6ef8cb23695adee8a'
+            '776119a7ccbbaa21e492ffb358b4e641b10564e799139c6b67cd276bcbab41b9ca48ea5390326e5c7f697d23904ad837a261e78303e0f3c6b9e93498614de535')
