@@ -1,6 +1,6 @@
 # Contributor: Bor Hodošček <bor.hodoscek@gmail.com> 
 pkgname=cabocha
-pkgver=0.68
+pkgver=0.69
 pkgrel=1
 pkgdesc="Japanese Dependency Structure Analyzer"
 arch=('i686' 'x86_64')
@@ -51,7 +51,7 @@ EOF
   make java
   cd ..
   cd java
-  sed -i "s:/usr/lib/jvm/java-6-openjdk/include:/usr/lib/jvm/default/include:" Makefile || return 1
+  sed -i "s:/usr/lib/jvm/default-java/include:/usr/lib/jvm/default/include:" Makefile || return 1
   make || return 1
   install -d $pkgdir/usr/share/java/cabocha
   install -d $pkgdir/usr/lib
@@ -60,7 +60,7 @@ EOF
   cd ..
 
 }
-md5sums=('3358b33212d88251b2510057f58f98bd'
+md5sums=('d682842cd268a57d6c846f451c6fc7ef'
          '5c3ffb7e03a8ae0085d0136fbef88b9e')
-sha1sums=('5e22a71eb86d778fdeb1b725c0b27f1fb4af7f4b'
+sha1sums=('9196098628c5d1f0b83b371a03352b6652c04001'
           '958ca31d24d75708bf794d4e926e324f86bbedb2')
